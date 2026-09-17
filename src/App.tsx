@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signOut,
+  type Auth,
   type User,
 } from 'firebase/auth';
 import PersonnelAdmin from './PersonnelAdmin';
@@ -14,18 +15,9 @@ import './index.css';
 
 type Employee = { uid: string; email: string; name: string; employeeId: string };
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
-const firebaseAuth = Object.values(firebaseConfig).every(Boolean)
-  ? getAuth(initializeApp(firebaseConfig))
-  : null;
-
 export default function App() {
+  const [firebaseAuth, setFirebaseAuth] = useState<Auth | null>(null);
+  const [configLoaded, setConfigLoaded] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [authorized, setAuthorized] = useState(false);
@@ -35,6 +27,23 @@ export default function App() {
 
   useEffect(() => {
     document.title = '君宇集團人員管理後台';
+    void (async () => {
+      try {
+        const response = await fetch('/api/firebase-config', { cache: 'no-store' });
+        const config = await response.json();
+        if (!response.ok || !Object.values(config).every(Boolean)) throw new Error();
+        setFirebaseAuth(getAuth(initializeApp(config)));
+      } catch {
+        setMessage('尚未設定 Google 登入，請先完成 Firebase 環境變數。');
+        setChecking(false);
+      } finally {
+        setConfigLoaded(true);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!configLoaded) return;
     if (!firebaseAuth) {
       setChecking(false);
       setMessage('尚未設定 Google 登入，請先完成 Firebase 環境變數。');
@@ -48,7 +57,7 @@ export default function App() {
       setChecking(!!currentUser);
       setMessage(currentUser ? '正在確認管理權限…' : '請使用管理員的公司 Google 帳號登入。');
     });
-  }, []);
+  }, [configLoaded, firebaseAuth]);
 
   useEffect(() => {
     if (!user) return;
@@ -107,7 +116,7 @@ export default function App() {
       <div className="account">
         {user
           ? <><span>{employee?.name || user.email}</span><button onClick={logout}>登出</button></>
-          : <button className="primary" onClick={login}>使用 Google 登入</button>}
+          : <button className="primary" disabled={!firebaseAuth} onClick={login}>使用 Google 登入</button>}
       </div>
     </header>
     <main className="content personnel-app-content">
@@ -121,7 +130,7 @@ export default function App() {
             <h1 id="admin-login-title">人員管理後台</h1>
             <p>集中查看完整公司名冊、搜尋員工，並管理 Google 登入帳號的連結與啟用狀態。</p>
             <div className={`status ${checking ? '' : 'offline'}`} role="status"><span className="dot" />{message}</div>
-            {!user && <button className="primary" onClick={login}>使用管理員 Google 帳號登入</button>}
+            {!user && <button className="primary" disabled={!firebaseAuth} onClick={login}>使用管理員 Google 帳號登入</button>}
             {user && !checking && !authorized && <button onClick={logout}>切換 Google 帳號</button>}
           </section>}
     </main>

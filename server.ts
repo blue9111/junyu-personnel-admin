@@ -50,6 +50,16 @@ app.get('/api/health', async (_req, res) => {
   }
 });
 
+app.get('/api/firebase-config', (_req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({
+    apiKey: process.env.VITE_FIREBASE_API_KEY || '',
+    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+    projectId: process.env.VITE_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID || '',
+    appId: process.env.VITE_FIREBASE_APP_ID || '',
+  });
+});
+
 app.get('/api/me', async (req, res) => {
   res.set('Cache-Control', 'no-store');
   if (!db) return res.status(503).json({ error: '尚未連線資料庫' });
