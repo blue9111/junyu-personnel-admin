@@ -1,0 +1,25 @@
+.wheel-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;text-align:left;background:#f6f8fb;font-weight:500}
+.wheel-trigger>span:last-child{font-size:14px;color:#7b8b9e;letter-spacing:-3px}
+.wheel-dialog{border:0;border-radius:22px;padding:0;width:min(480px,calc(100% - 24px));color:#12213a;background:#fff;box-shadow:0 24px 80px #10253d40;max-height:calc(100dvh - 24px);overflow:auto}
+.wheel-dialog::backdrop{background:#13243d66;backdrop-filter:blur(3px)}
+.wheel-dialog-bar{display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid #edf0f4;gap:8px}
+.wheel-dialog-bar h3{font-size:16px;margin:0;text-align:center}
+.wheel-dialog-bar button{border:0;color:#176a8d;background:transparent;padding:10px;font-size:15px}
+.wheel-dialog-bar .wheel-done{font-weight:700}
+.wheel-hint{text-align:center;font-size:12px;color:#718197;margin:16px 0 8px}
+.wheel-columns{display:flex;gap:6px;padding:0 16px 24px}
+.wheel-column{flex:1;min-width:0;text-align:center}
+.wheel-column-label{font-size:12px;color:#718197}
+.wheel-window{height:220px;position:relative;margin-top:8px}
+.wheel-selection{position:absolute;top:88px;height:44px;left:0;right:0;border-radius:9px;background:#edf2f7;pointer-events:none}
+.wheel-list{position:relative;height:220px;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y mandatory;padding:88px 0;scrollbar-width:none;touch-action:pan-y;mask-image:linear-gradient(transparent,#000 36%,#000 64%,transparent)}
+.wheel-list::-webkit-scrollbar{display:none}
+.wheel-list:focus-visible{outline:2px solid #176a8d;outline-offset:-2px;border-radius:9px}
+.wheel-option{height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:20px;color:#7d8998;cursor:pointer;user-select:none;white-space:nowrap}
+.wheel-option[aria-selected=true]{color:#12213a;font-weight:600}
+.month-picker-title .wheel-trigger{font-size:23px;background:transparent;border-color:transparent;padding:0;gap:16px}
+.form-grid .wheel-trigger{width:100%;margin-top:6px;color:#1e3449}
+.picker-field{font-size:12px;font-weight:700;color:#536579}
+.contact-picker{margin-top:8px}
+.modal{max-height:calc(100dvh - 36px);overflow-y:auto}
+@media(max-width:700px){.wheel-dialog{margin:auto auto 0;width:100%;max-width:100%;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}.toolbar-actions{flex-wrap:wrap}}
